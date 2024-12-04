@@ -52,13 +52,3 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
-skie {
-    features {
-        // https://skie.touchlab.co/features/flows-in-swiftui
-        enableSwiftUIObservingPreview = true
-        // https://skie.touchlab.co/features/combine
-        enableFutureCombineExtensionPreview = true
-        enableFlowCombineConvertorPreview = true
-    }
-}

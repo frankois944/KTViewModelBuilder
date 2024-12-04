@@ -10,12 +10,12 @@ import SwiftUI
 import KTViewModelBuilder
 import shared
 
-@sharedViewModel(ofType: ExampleViewModel.self,
-                 publishing:
-                    (\.stringData, String.self),
-                 (\.intNullableData, Int?.self),
-                 (\.randomValue, Double.self),
-                 (\.entityData, MyData?.self)
+@ktViewModel(ofType: ExampleViewModel.self,
+             publishing:
+                (\.stringData, String.self),
+             (\.intNullableData, Int?.self),
+             (\.randomValue, Double.self),
+             (\.entityData, MyData?.self)
 )
 class SharedExampleViewModel : ObservableObject {}
 

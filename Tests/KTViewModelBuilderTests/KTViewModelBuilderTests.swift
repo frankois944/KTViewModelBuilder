@@ -9,7 +9,7 @@ import XCTest
 import KTViewModelBuilderMacros
 
 let testMacros: [String: Macro.Type] = [
-    "sharedViewModel": SharedViewModelMacro.self,
+    "ktViewModel": SharedViewModelMacro.self,
 ]
 #endif
 
@@ -18,7 +18,7 @@ final class KTViewModelBuilderTests: XCTestCase {
         #if canImport(KTViewModelBuilderMacros)
         assertMacroExpansion(
             """
-            @sharedViewModel(ofType: MainScreenViewModel.self,
+            @ktViewModel(ofType: MainScreenViewModel.self,
                              publishing: 
                 (\\.mainScreenUIState, MainScreenUIState.self), 
                 (\\.userId, String?.self),
