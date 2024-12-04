@@ -1,5 +1,5 @@
 # KTViewModelBuilder
-A macro to use inside a Kotlin multiplatform for wrapping a Kotlin ViewModel into a SwiftUI ObservableObject, based on the [SKIE library](https://skie.touchlab.co/).
+A macro to use inside a Kotlin multiplatform project for wrapping a Kotlin ViewModel into a SwiftUI ObservableObject, based on the [SKIE library](https://skie.touchlab.co/).
 
 The goal of this macro is to increase the iOS development experience by removing the complexity of using a Kotlin ViewModel inside an iOS application written in Swift and also respecting the Lifecycle of easily.
 
