@@ -165,11 +165,11 @@ struct ExampleScreen: View {
 
 As this solution is based on Kotlin multiplatform and SKIE, some requirements need to be met.
 
-### import SKIE library
+### Import SKIE library
 
 Please follow the [installation step](https://skie.touchlab.co/intro#installation) of the library.
 
-### add and export the kotlin ViewModel to Swift
+### Add and export the kotlin ViewModel to Swift
 
 - Add in your .toml or .gradle the following dependency
 
@@ -199,8 +199,16 @@ sourceSets {
 }
 ```
 
+### Add the macro to your xcode project.
+
+Finally, add this package to your application.
+
+```
+https://github.com/frankois944/KTViewModelBuilder
+```
+
 ## Conclusion
 
-That's all we need.
+That's all you need.
 
 A [Sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) is available in this repository, which has a shared library and an iOS/Android app.
