@@ -201,7 +201,7 @@ sourceSets {
 
 ### Add the macro to your xcode project.
 
-Finally, add this package to your application.
+Finally, add this package to your application swift package dependencies.
 
 ```
 https://github.com/frankois944/KTViewModelBuilder
