@@ -74,7 +74,7 @@ public struct SharedViewModelMacro: MemberMacro {
             bindings.append(DeclSyntax(stringLiteral: "@Published private(set) var \(item.binding.name): \(item.binding.type)\(item.isOptional ? "?" : "" )"))
         }
         
-        let initFunc = try InitializerDeclSyntax(SyntaxNodeString(stringLiteral: "init(_ viewModel: \(className) = .init())")) {
+        let initFunc = try InitializerDeclSyntax(SyntaxNodeString(stringLiteral: "init(_ viewModel: \(className))")) {
             ExprSyntax(stringLiteral: """
             self.viewModelStore.put(key: "\(className)Key", viewModel: viewModel)
             """)

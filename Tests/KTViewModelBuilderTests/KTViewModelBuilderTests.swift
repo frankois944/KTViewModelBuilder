@@ -20,10 +20,10 @@ final class KTViewModelBuilderTests: XCTestCase {
             """
             @sharedViewModel(ofType: MainScreenViewModel.self,
                              publishing: 
-                //(\\.mainScreenUIState, MainScreenUIState.self), 
-                //(\\.userId, String?.self),
+                (\\.mainScreenUIState, MainScreenUIState.self), 
+                (\\.userId, String?.self),
                 (\\.intNotValue, Int.self),
-                (\\.intNullValue, Int?.self),
+                (\\.intNullValue, Int?.self)
             )
             class MainScreenVM: ObservableObject {}
             """,
@@ -36,12 +36,20 @@ final class KTViewModelBuilderTests: XCTestCase {
 
                 @Published private(set) var userId: String?
 
+                @Published private(set) var intNotValue: Int
+
+                @Published private(set) var intNullValue: Int?
+
                 init(_ viewModel: MainScreenViewModel) {
                     self.viewModelStore.put(key: "MainScreenViewModelKey", viewModel: viewModel)
                     self.mainScreenUIState = viewModel.mainScreenUIState.value
                     print("INIT mainScreenUIState : " + String(describing: viewModel.mainScreenUIState.value))
                     self.userId = viewModel.userId.value
                     print("INIT userId : " + String(describing: viewModel.userId.value))
+                    self.intNotValue = viewModel.intNotValue.value.intValue
+                    print("INIT intNotValue : " + String(describing: viewModel.intNotValue.value))
+                    self.intNullValue = viewModel.intNullValue.value?.intValue
+                    print("INIT intNullValue : " + String(describing: viewModel.intNullValue.value))
                 }
 
                 var instance: MainScreenViewModel {
@@ -67,6 +75,26 @@ final class KTViewModelBuilderTests: XCTestCase {
                                     print("UPDATING userId : " + String(describing: value))
                                     #endif
                                     self?.userId = value
+                                }
+                            }
+                        }
+                        $0.addTask { @MainActor [weak self] in
+                            for await value in self!.instance.intNotValue where self != nil {
+                                if value.intValue != self?.intNotValue {
+                                    #if DEBUG
+                                    print("UPDATING intNotValue : " + String(describing: value))
+                                    #endif
+                                    self?.intNotValue = value.intValue
+                                }
+                            }
+                        }
+                        $0.addTask { @MainActor [weak self] in
+                            for await value in self!.instance.intNullValue where self != nil {
+                                if value?.intValue != self?.intNullValue {
+                                    #if DEBUG
+                                    print("UPDATING intNullValue : " + String(describing: value))
+                                    #endif
+                                    self?.intNullValue = value?.intValue
                                 }
                             }
                         }

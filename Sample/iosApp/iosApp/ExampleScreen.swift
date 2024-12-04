@@ -17,13 +17,13 @@ import shared
                  (\.randomValue, Double.self),
                  (\.entityData, MyData?.self)
 )
-class ExampleiOSViewModel : ObservableObject {}
+class SharedExampleViewModel : ObservableObject {}
 
 
 struct ExampleScreen: View {
     
     // init the viewmodel, binding and lifecycle
-    @StateObject var viewModel = ExampleiOSViewModel()
+    @StateObject var viewModel = SharedExampleViewModel(.init())
     
     var body: some View {
         VStack {
