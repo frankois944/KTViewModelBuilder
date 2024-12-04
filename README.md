@@ -49,93 +49,81 @@ The macro generate a SwiftUI ViewModel from the content of the Kotlin `ExampleVi
 class SharedExampleViewModel : ObservableObject {}
 ```
 <details>
-<summary>Example of generated content</summary>
+<summary>Generated content</summary>
 
-[Sources](https://github.com/frankois944/KTViewModelBuilder/blob/main/Tests/KTViewModelBuilderTests/KTViewModelBuilderTests.swift)
 ```swift
-@sharedViewModel(ofType: MainScreenViewModel.self,
-                 publishing: 
-    (\\.mainScreenUIState, MainScreenUIState.self), 
-    (\\.userId, String?.self),
-    (\\.intNotValue, Int.self),
-    (\\.intNullValue, Int?.self)
-)
-class MainScreenVM: ObservableObject {}
-""",
-expandedSource: """
-class MainScreenVM: ObservableObject {
-
+class SharedExampleViewModel : ObservableObject {
     private let viewModelStore = ViewModelStore()
-
-    @Published private(set) var mainScreenUIState: MainScreenUIState
-
-    @Published private(set) var userId: String?
-
-    @Published private(set) var intNotValue: Int
-
-    @Published private(set) var intNullValue: Int?
-
-    init(_ viewModel: MainScreenViewModel) {
-        self.viewModelStore.put(key: "MainScreenViewModelKey", viewModel: viewModel)
-        self.mainScreenUIState = viewModel.mainScreenUIState.value
-        print("INIT mainScreenUIState : " + String(describing: viewModel.mainScreenUIState.value))
-        self.userId = viewModel.userId.value
-        print("INIT userId : " + String(describing: viewModel.userId.value))
-        self.intNotValue = viewModel.intNotValue.value.intValue
-        print("INIT intNotValue : " + String(describing: viewModel.intNotValue.value))
-        self.intNullValue = viewModel.intNullValue.value?.intValue
-        print("INIT intNullValue : " + String(describing: viewModel.intNullValue.value))
+    
+    @Published private(set) var stringData: String
+    
+    @Published private(set) var intNullableData: Int?
+    
+    @Published private(set) var randomValue: Double
+    
+    @Published private(set) var entityData: MyData?
+    
+    init(_ viewModel: ExampleViewModel) {
+        self.viewModelStore.put(key: "ExampleViewModelKey", viewModel: viewModel)
+        self.stringData = viewModel.stringData.value
+        print("INIT stringData : " + String(describing: viewModel.stringData.value))
+        self.intNullableData = viewModel.intNullableData.value?.intValue
+        print("INIT intNullableData : " + String(describing: viewModel.intNullableData.value))
+        self.randomValue = viewModel.randomValue.value.doubleValue
+        print("INIT randomValue : " + String(describing: viewModel.randomValue.value))
+        self.entityData = viewModel.entityData.value
+        print("INIT entityData : " + String(describing: viewModel.entityData.value))
     }
-
-    var instance: MainScreenViewModel {
-        self.viewModelStore.get(key: "MainScreenViewModelKey") as! MainScreenViewModel
+    
+    var instance: ExampleViewModel {
+        self.viewModelStore.get(key: "ExampleViewModelKey") as! ExampleViewModel
     }
-
+    
     func start() async {
         await withTaskGroup(of: (Void).self) {
             $0.addTask { @MainActor [weak self] in
-                for await value in self!.instance.mainScreenUIState where self != nil {
-                    if value != self?.mainScreenUIState {
+                for await value in self!.instance.stringData where self != nil {
+                    if value != self?.stringData {
                         #if DEBUG
-                        print("UPDATING mainScreenUIState : " + String(describing: value))
+                        print("UPDATING stringData : " + String(describing: value))
                         #endif
-                        self?.mainScreenUIState = value
+                        self?.stringData = value
                     }
                 }
             }
             $0.addTask { @MainActor [weak self] in
-                for await value in self!.instance.userId where self != nil {
-                    if value != self?.userId {
+                for await value in self!.instance.intNullableData where self != nil {
+                    if value?.intValue != self?.intNullableData {
                         #if DEBUG
-                        print("UPDATING userId : " + String(describing: value))
+                        print("UPDATING intNullableData : " + String(describing: value))
                         #endif
-                        self?.userId = value
+                        self?.intNullableData = value?.intValue
                     }
                 }
             }
             $0.addTask { @MainActor [weak self] in
-                for await value in self!.instance.intNotValue where self != nil {
-                    if value.intValue != self?.intNotValue {
+                for await value in self!.instance.randomValue where self != nil {
+                    if value.doubleValue != self?.randomValue {
                         #if DEBUG
-                        print("UPDATING intNotValue : " + String(describing: value))
+                        print("UPDATING randomValue : " + String(describing: value))
                         #endif
-                        self?.intNotValue = value.intValue
+                        self?.randomValue = value.doubleValue
                     }
                 }
             }
             $0.addTask { @MainActor [weak self] in
-                for await value in self!.instance.intNullValue where self != nil {
-                    if value?.intValue != self?.intNullValue {
+                for await value in self!.instance.entityData where self != nil {
+                    if value != self?.entityData {
                         #if DEBUG
-                        print("UPDATING intNullValue : " + String(describing: value))
+                        print("UPDATING entityData : " + String(describing: value))
                         #endif
-                        self?.intNullValue = value?.intValue
+                        self?.entityData = value
                     }
                 }
             }
         }
     }
-
+    
     deinit {
         self.viewModelStore.clear()
     }
@@ -213,6 +201,6 @@ sourceSets {
 
 ## Conclusion
 
-That's all we need. 
+That's all we need.
 
-A [Sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) has a shared library, an iOS/Android app.
+A [Sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) is available in this repository, which has a shared library and an iOS/Android app.
