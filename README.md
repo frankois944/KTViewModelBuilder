@@ -48,40 +48,8 @@ The macro generate a SwiftUI ViewModel from the content of the Kotlin `ExampleVi
 )
 class SharedExampleViewModel : ObservableObject {}
 ```
-
-### SwiftUi View
-
-The properties of the ViewModel can be directly used from the `viewModel` property and the method from `viewModel.instance`.
-
-The binding must be triggered from a SwiftUI task modifier; it will start the Observability of the declared properties.
-
-```swift
-struct ExampleScreen: View {
-    
-    // Initialize the ViewModel, binding and lifecycle
-    @StateObject var viewModel = SharedExampleViewModel(ExampleViewModel())
-    
-    var body: some View {
-        VStack {
-            Text("STRING VALUE \(viewModel.stringData)")
-            Text("NULL VALUE \(String(describing: viewModel.intNullableData))")
-            Text("RANDOM VALUE \(viewModel.randomValue)")
-            Button {
-                viewModel.instance.randomizeValue()
-            } label: {
-                Text("randomizeValue")
-            }
-        }.task {
-            // start the ViewModel lifecycle and keep it alive until the view disappear
-            await viewModel.start()
-        }
-    }
-}
-```
-
-### The macro
 <details>
-<summary>The generated content</summary>
+<summary>Example of generated content</summary>
 
 [Sources](https://github.com/frankois944/KTViewModelBuilder/blob/main/Tests/KTViewModelBuilderTests/KTViewModelBuilderTests.swift)
 ```swift
@@ -175,6 +143,35 @@ class MainScreenVM: ObservableObject {
 ```
 </details>
 
+### SwiftUi View
+
+The properties of the ViewModel can be directly used from the `viewModel` property and the method from `viewModel.instance`.
+
+The binding must be triggered from a SwiftUI task modifier; it will start the Observability of the declared properties.
+
+```swift
+struct ExampleScreen: View {
+    
+    // Initialize the ViewModel, binding and lifecycle
+    @StateObject var viewModel = SharedExampleViewModel(ExampleViewModel())
+    
+    var body: some View {
+        VStack {
+            Text("STRING VALUE \(viewModel.stringData)")
+            Text("NULL VALUE \(String(describing: viewModel.intNullableData))")
+            Text("RANDOM VALUE \(viewModel.randomValue)")
+            Button {
+                viewModel.instance.randomizeValue()
+            } label: {
+                Text("randomizeValue")
+            }
+        }.task {
+            // start the ViewModel lifecycle and keep it alive until the view disappear
+            await viewModel.start()
+        }
+    }
+}
+```
 
 ## Requirement
 
