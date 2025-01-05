@@ -5,7 +5,7 @@ The goal of this macro is to increase the iOS development experience by removing
 
 For example, instead of using KotlinInt/KotlinInt?, we're using Int/Int?, it can work with Float/Double/...
 
-Note: the macro creates a unidirectional binding as usually used on Kotlin MVVM, so use can't directly SwiftUI `@Binding`.
+Note: the macro creates a unidirectional binding as usually used on Kotlin MVVM, so we can't use directly SwiftUI `@Binding`.
 
 ## Example
 
