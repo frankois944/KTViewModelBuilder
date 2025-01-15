@@ -66,13 +66,9 @@ class SharedExampleViewModel : ObservableObject {
     init(_ viewModel: ExampleViewModel) {
         self.viewModelStore.put(key: "ExampleViewModelKey", viewModel: viewModel)
         self.stringData = viewModel.stringData.value
-        print("INIT stringData : " + String(describing: viewModel.stringData.value))
         self.intNullableData = viewModel.intNullableData.value?.intValue
-        print("INIT intNullableData : " + String(describing: viewModel.intNullableData.value))
         self.randomValue = viewModel.randomValue.value.doubleValue
-        print("INIT randomValue : " + String(describing: viewModel.randomValue.value))
         self.entityData = viewModel.entityData.value
-        print("INIT entityData : " + String(describing: viewModel.entityData.value))
     }
     
     var instance: ExampleViewModel {
@@ -84,9 +80,6 @@ class SharedExampleViewModel : ObservableObject {
             $0.addTask { @MainActor [weak self] in
                 for await value in self!.instance.stringData where self != nil {
                     if value != self?.stringData {
-                        #if DEBUG
-                        print("UPDATING stringData : " + String(describing: value))
-                        #endif
                         self?.stringData = value
                     }
                 }
@@ -94,9 +87,6 @@ class SharedExampleViewModel : ObservableObject {
             $0.addTask { @MainActor [weak self] in
                 for await value in self!.instance.intNullableData where self != nil {
                     if value?.intValue != self?.intNullableData {
-                        #if DEBUG
-                        print("UPDATING intNullableData : " + String(describing: value))
-                        #endif
                         self?.intNullableData = value?.intValue
                     }
                 }
@@ -104,9 +94,6 @@ class SharedExampleViewModel : ObservableObject {
             $0.addTask { @MainActor [weak self] in
                 for await value in self!.instance.randomValue where self != nil {
                     if value.doubleValue != self?.randomValue {
-                        #if DEBUG
-                        print("UPDATING randomValue : " + String(describing: value))
-                        #endif
                         self?.randomValue = value.doubleValue
                     }
                 }
@@ -114,9 +101,6 @@ class SharedExampleViewModel : ObservableObject {
             $0.addTask { @MainActor [weak self] in
                 for await value in self!.instance.entityData where self != nil {
                     if value != self?.entityData {
-                        #if DEBUG
-                        print("UPDATING entityData : " + String(describing: value))
-                        #endif
                         self?.entityData = value
                     }
                 }
