@@ -44,6 +44,8 @@ public class ExampleViewModel : ViewModel() {
 
 The macro generate a SwiftUI ViewModel from the content of the Kotlin `ExampleViewModel` class.
 
+#### Important: Some logs are added on DEBUG, there are removed when building on release 
+
 ```swift
 @ktViewModelBinding(ofType: ExampleViewModel.self,
                     publishing:
