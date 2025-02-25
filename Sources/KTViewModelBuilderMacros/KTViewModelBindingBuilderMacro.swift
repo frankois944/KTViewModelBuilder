@@ -94,7 +94,6 @@ public struct SharedViewModelBindingMacro: MemberMacro {
         bindingList.forEach { item in
             if item.isBidirectional {
                 let type = item.binding.type.lowercased()
-                let optional = item.isOptional ? "?" : ""
                 if (kotlinType.contains(type)) {
                     let setter = getKotlinSetter(swiftType: type, value: item.binding.name, isOptional: item.isOptional)
                     bindings.append(DeclSyntax(stringLiteral: """

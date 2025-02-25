@@ -21,11 +21,14 @@ final class KTViewModelBuilderTests: XCTestCase {
             """
             @ktViewModelBinding(ofType: MainScreenViewModel.self,
                                 publishing:
-                                    Property(\\.stringData, String.self),
-                                Property(\\.intNullableData, Int?.self),
-                                Property(\\.randomValue, Double.self),
-                                Property(\\.entityData, MyData?.self),
-                                Property(\\.bidirectionalString, String?.self, true)
+                .init(\\.stringData, String.self),
+                .init(\\.intNullableData, Int?.self),
+                .init(\\.randomValue, Double.self),
+                .init(\\.entityData, MyData?.self),
+                .init(\\.bidirectionalString, String.self, true),
+                .init(\\.bidirectionalInt, Int?.self, true),
+                .init(\\.bidirectionalBoolean, Bool.self, true),
+                .init(\\.bidirectionalLong, Int64.self, true)
             )
             class MainScreenVM: ObservableObject {}
             """,
@@ -34,28 +37,56 @@ final class KTViewModelBuilderTests: XCTestCase {
 
                 private let viewModelStore = ViewModelStore()
 
-                @Published private(set) var mainScreenUIState: MainScreenUIState
+                @Published private(set) var stringData: String
 
-                @Published private(set) var userId: String?
+                @Published private(set) var intNullableData: Int?
 
-                @Published private(set) var intNotValue: Int
+                @Published private(set) var randomValue: Double
 
-                @Published private(set) var intNullValue: Int?
-            
-                @Published var bidirectionalString: String?
+                @Published private(set) var entityData: MyData?
+
+                @Published var bidirectionalString: String {
+                        didSet {
+                            instance.bidirectionalString.value = bidirectionalString
+                        }
+                    }
+
+                @Published var bidirectionalInt: Int? {
+                        didSet {
+                            instance.bidirectionalInt.value = bidirectionalInt != nil ? KotlinInt(integerLiteral: bidirectionalInt!) : nil
+                        }
+                    }
+
+                @Published var bidirectionalBoolean: Bool {
+                        didSet {
+                            instance.bidirectionalBoolean.value = KotlinBoolean(bool:  bidirectionalBoolean)
+                        }
+                    }
+
+                @Published var bidirectionalLong: Int64 {
+                        didSet {
+                            instance.bidirectionalLong.value = KotlinLong(value: bidirectionalLong)
+                        }
+                    }
 
                 init(_ viewModel: MainScreenViewModel) {
                     self.viewModelStore.put(key: "MainScreenViewModelKey", viewModel: viewModel)
-                    self.mainScreenUIState = viewModel.mainScreenUIState.value
-                    print("INIT mainScreenUIState : " + String(describing: viewModel.mainScreenUIState.value))
-                    self.userId = viewModel.userId.value
-                    print("INIT userId : " + String(describing: viewModel.userId.value))
-                    self.intNotValue = viewModel.intNotValue.value.intValue
-                    print("INIT intNotValue : " + String(describing: viewModel.intNotValue.value))
-                    self.intNullValue = viewModel.intNullValue.value?.intValue
-                    print("INIT intNullValue : " + String(describing: viewModel.intNullValue.value))
+                    self.stringData = viewModel.stringData.value
+                    print("INIT stringData : " + String(describing: viewModel.stringData.value))
+                    self.intNullableData = viewModel.intNullableData.value?.intValue
+                    print("INIT intNullableData : " + String(describing: viewModel.intNullableData.value))
+                    self.randomValue = viewModel.randomValue.value.doubleValue
+                    print("INIT randomValue : " + String(describing: viewModel.randomValue.value))
+                    self.entityData = viewModel.entityData.value
+                    print("INIT entityData : " + String(describing: viewModel.entityData.value))
                     self.bidirectionalString = viewModel.bidirectionalString.value
                     print("INIT bidirectionalString : " + String(describing: viewModel.bidirectionalString.value))
+                    self.bidirectionalInt = viewModel.bidirectionalInt.value?.intValue
+                    print("INIT bidirectionalInt : " + String(describing: viewModel.bidirectionalInt.value))
+                    self.bidirectionalBoolean = viewModel.bidirectionalBoolean.value.boolValue
+                    print("INIT bidirectionalBoolean : " + String(describing: viewModel.bidirectionalBoolean.value))
+                    self.bidirectionalLong = viewModel.bidirectionalLong.value.int64Value
+                    print("INIT bidirectionalLong : " + String(describing: viewModel.bidirectionalLong.value))
                 }
 
                 var instance: MainScreenViewModel {
@@ -65,42 +96,42 @@ final class KTViewModelBuilderTests: XCTestCase {
                 func start() async {
                     await withTaskGroup(of: (Void).self) {
                         $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.mainScreenUIState where self != nil {
-                                if value != self?.mainScreenUIState {
+                            for await value in self!.instance.stringData where self != nil {
+                                if value != self?.stringData {
                                     #if DEBUG
-                                    print("UPDATING mainScreenUIState : " + String(describing: value))
+                                    print("UPDATING TO VIEW stringData : " + String(describing: value))
                                     #endif
-                                    self?.mainScreenUIState = value
+                                    self?.stringData = value
                                 }
                             }
                         }
                         $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.userId where self != nil {
-                                if value != self?.userId {
+                            for await value in self!.instance.intNullableData where self != nil {
+                                if value?.intValue != self?.intNullableData {
                                     #if DEBUG
-                                    print("UPDATING userId : " + String(describing: value))
+                                    print("UPDATING TO VIEW intNullableData : " + String(describing: value))
                                     #endif
-                                    self?.userId = value
+                                    self?.intNullableData = value?.intValue
                                 }
                             }
                         }
                         $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.intNotValue where self != nil {
-                                if value.intValue != self?.intNotValue {
+                            for await value in self!.instance.randomValue where self != nil {
+                                if value.doubleValue != self?.randomValue {
                                     #if DEBUG
-                                    print("UPDATING intNotValue : " + String(describing: value))
+                                    print("UPDATING TO VIEW randomValue : " + String(describing: value))
                                     #endif
-                                    self?.intNotValue = value.intValue
+                                    self?.randomValue = value.doubleValue
                                 }
                             }
                         }
                         $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.intNullValue where self != nil {
-                                if value?.intValue != self?.intNullValue {
+                            for await value in self!.instance.entityData where self != nil {
+                                if value != self?.entityData {
                                     #if DEBUG
-                                    print("UPDATING intNullValue : " + String(describing: value))
+                                    print("UPDATING TO VIEW entityData : " + String(describing: value))
                                     #endif
-                                    self?.intNullValue = value?.intValue
+                                    self?.entityData = value
                                 }
                             }
                         }
@@ -108,9 +139,39 @@ final class KTViewModelBuilderTests: XCTestCase {
                             for await value in self!.instance.bidirectionalString where self != nil {
                                 if value != self?.bidirectionalString {
                                     #if DEBUG
-                                    print("UPDATING bidirectionalString : " + String(describing: value))
+                                    print("UPDATING TO VIEW bidirectionalString : " + String(describing: value))
                                     #endif
                                     self?.bidirectionalString = value
+                                }
+                            }
+                        }
+                        $0.addTask { @MainActor [weak self] in
+                            for await value in self!.instance.bidirectionalInt where self != nil {
+                                if value?.intValue != self?.bidirectionalInt {
+                                    #if DEBUG
+                                    print("UPDATING TO VIEW bidirectionalInt : " + String(describing: value))
+                                    #endif
+                                    self?.bidirectionalInt = value?.intValue
+                                }
+                            }
+                        }
+                        $0.addTask { @MainActor [weak self] in
+                            for await value in self!.instance.bidirectionalBoolean where self != nil {
+                                if value.boolValue != self?.bidirectionalBoolean {
+                                    #if DEBUG
+                                    print("UPDATING TO VIEW bidirectionalBoolean : " + String(describing: value))
+                                    #endif
+                                    self?.bidirectionalBoolean = value.boolValue
+                                }
+                            }
+                        }
+                        $0.addTask { @MainActor [weak self] in
+                            for await value in self!.instance.bidirectionalLong where self != nil {
+                                if value.int64Value != self?.bidirectionalLong {
+                                    #if DEBUG
+                                    print("UPDATING TO VIEW bidirectionalLong : " + String(describing: value))
+                                    #endif
+                                    self?.bidirectionalLong = value.int64Value
                                 }
                             }
                         }
