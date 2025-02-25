@@ -1,21 +1,4 @@
-package com.example.ktviewmodelbuilder
-
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-
-public data class MyData(
-    val stringData: String = "Some Data",
-    val intNullableData: Int? = null,
-    val randomValue: Int = 0,
-    val entityData: String = "Some Data"
-)
-
-public class ExampleViewModel : ViewModel() {
-
-    public var bidirectionalString: MutableStateFlow<String> = MutableStateFlow<String>("SOME INPUT")
+ public var bidirectionalString: MutableStateFlow<String> = MutableStateFlow<String>("SOME INPUT")
     public var bidirectionalBoolean: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     public var bidirectionalInt: MutableStateFlow<Int?> = MutableStateFlow<Int?>(42)
     public var bidirectionalLong: MutableStateFlow<Long> = MutableStateFlow<Long>(424242L)
@@ -58,4 +41,3 @@ public class ExampleViewModel : ViewModel() {
             }
         }
     }
-}

@@ -3,9 +3,17 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct SharedViewModelMacro: MemberMacro {
+@main
+struct KTViewModelBuilderPlugin: CompilerPlugin {
+    let providingMacros: [Macro.Type] = [
+        SharedViewModelMacro.self,
+        SharedViewModelBindingMacro.self
+    ]
+}
+
+public struct SharedViewModelBindingMacro: MemberMacro {
     
-    private static let kotlinType = ["int", "double", "float", "bool", "uint"]
+    private static let kotlinType = ["int", "double", "float", "bool", "uint", "int64"]
     
     public static func expansion(
         of node: AttributeSyntax,
@@ -39,39 +47,76 @@ public struct SharedViewModelMacro: MemberMacro {
             fatalError("The Macro SharedViewModel don't have type")
         }
         
-        var bindingList = [(binding: (name: String, type: String), isOptional: Bool)]()
+        var bindingList = [(binding: (name: String, type: String), isOptional: Bool, isBidirectional: Bool)]()
         
         for (index, value) in arguments.enumerated() {
             if index == 0 {
                 continue
             }
-            let name = value.expression.as(TupleExprSyntax.self)?.elements.first?.expression
-                .as(KeyPathExprSyntax.self)?.components.first?.component
-                .as(KeyPathPropertyComponentSyntax.self)?.declName.baseName.text
-            var type = value.expression
-                .as(TupleExprSyntax.self)?.elements.dropFirst().first?.expression
-                .as(MemberAccessExprSyntax.self)?.base?
-                .as(DeclReferenceExprSyntax.self)?.baseName.text
-            let isOptional = type == nil
-            if type == nil {
-                type = value.expression
-                    .as(TupleExprSyntax.self)?.elements.dropFirst().first?.expression
-                    .as(MemberAccessExprSyntax.self)?.base?
-                    .as(OptionalChainingExprSyntax.self)?.expression
-                    .as(DeclReferenceExprSyntax.self)?.baseName.text
+            let parameters = value.expression.as(FunctionCallExprSyntax.self)?.arguments
+            var name: String?
+            var type: String?
+            var bidirectional: Bool = false
+            var isOptional = false
+            for (index, value) in parameters!.enumerated() {
+                switch (index) {
+                case 0: // name
+                    name = value.expression
+                        .as(KeyPathExprSyntax.self)?.components.first?.component
+                        .as(KeyPathPropertyComponentSyntax.self)?.declName.baseName.text
+                case 1: // type
+                    type = value.expression
+                        .as(MemberAccessExprSyntax.self)?.base?
+                        .as(DeclReferenceExprSyntax.self)?.baseName.text
+                    if type == nil {
+                        isOptional = true
+                        type = value.expression
+                            .as(MemberAccessExprSyntax.self)?.base?
+                            .as(OptionalChainingExprSyntax.self)?.expression
+                            .as(DeclReferenceExprSyntax.self)?.baseName.text
+                    }
+                case 2: // bidirectional
+                    bidirectional = value.expression
+                        .as(BooleanLiteralExprSyntax.self)?.literal.text == "true"
+                default:
+                    break
+                }
             }
             guard let name = name, let type = type else {
                 fatalError("Invalid publishing couple \(String(describing: name)) \(String(describing: type))")
             }
-            bindingList.append(((name, type), isOptional))
+            bindingList.append(((name, type), isOptional, bidirectional))
         }
-        
         
         let viewModelStore = DeclSyntax(stringLiteral: "private let viewModelStore = ViewModelStore()")
         
         var bindings = [DeclSyntax]()
         bindingList.forEach { item in
-            bindings.append(DeclSyntax(stringLiteral: "@Published private(set) var \(item.binding.name): \(item.binding.type)\(item.isOptional ? "?" : "" )"))
+            if item.isBidirectional {
+                let type = item.binding.type.lowercased()
+                let optional = item.isOptional ? "?" : ""
+                if (kotlinType.contains(type)) {
+                    let setter = getKotlinSetter(swiftType: type, value: item.binding.name, isOptional: item.isOptional)
+                    bindings.append(DeclSyntax(stringLiteral: """
+                        @Published var \(item.binding.name): \(item.binding.type)\(item.isOptional ? "?" : "") {
+                            didSet {
+                                instance.\(item.binding.name).value = \(setter)
+                            }
+                        }
+                    """))
+                } else {
+                    bindings.append(DeclSyntax(stringLiteral: """
+                        @Published var \(item.binding.name): \(item.binding.type)\(item.isOptional ? "?" : "") {
+                            didSet {
+                                instance.\(item.binding.name).value = \(item.binding.name)
+                            }
+                        }
+                    """))
+                }
+            } else {
+                bindings.append(DeclSyntax(stringLiteral: "@Published private(set) var \(item.binding.name): \(item.binding.type)\(item.isOptional ? "?" : "" )"))
+            }
+            
         }
         
         let initFunc = try InitializerDeclSyntax(SyntaxNodeString(stringLiteral: "init(_ viewModel: \(className))")) {
@@ -119,7 +164,7 @@ public struct SharedViewModelMacro: MemberMacro {
                             for await value in self!.instance.\(item.binding.name) where self != nil {
                                 if \(updatedValue) != self?.\(item.binding.name) {
                                     #if DEBUG
-                                    print("UPDATING \(item.binding.name) : " + String(describing: value))
+                                    print("UPDATING TO VIEW \(item.binding.name) : " + String(describing: value))
                                     #endif
                                     self?.\(item.binding.name) = \(updatedValue)
                                 }
@@ -150,5 +195,34 @@ public struct SharedViewModelMacro: MemberMacro {
         ])
         return result
     }
+    
+    private static func getKotlinSetter(swiftType: String, value: String, isOptional: Bool) -> String {
+        var result = ""
+        if isOptional {
+            result += "\(value) != nil ? "
+        }
+        switch swiftType {
+        case "int":
+            result += "KotlinInt(integerLiteral: \(value)"
+        case "double":
+            result += "KotlinDouble(double: \(value)"
+        case "float":
+            result += "KotlinFloat(float: \(value)"
+        case "bool":
+            result += "KotlinBoolean(bool:  \(value)"
+        case "uint":
+            result += "KotlinUInt(value: \(value)"
+        case "int64":
+            result += "KotlinLong(value: \(value)"
+        default:
+             // more type possible
+            fatalError("unsupported swift type \(swiftType)")
+        }
+        if isOptional {
+            result += "!) : nil"
+        } else {
+            result += ")"
+        }
+        return result
+    }
 }
-

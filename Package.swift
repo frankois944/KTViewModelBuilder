@@ -32,7 +32,6 @@ let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ]
         ),
-
         // Library that exposes a macro as part of its API, which is used in client programs.
         .target(name: "KTViewModelBuilder", dependencies: ["KTViewModelBuilderMacros"]),
 
