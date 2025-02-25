@@ -61,6 +61,8 @@ class MyMainScreenViewModel: ObservableObject {}
 <details>
 <summary>Generated content</summary>
 
+### Important: The debug logs are removed when building on release 
+
 ```swift
 class MyMainScreenViewModel : ObservableObject {
     private let viewModelStore = ViewModelStore()
