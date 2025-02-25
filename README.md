@@ -223,7 +223,7 @@ The binding must be triggered from a SwiftUI task modifier; it will start the Ob
 struct ExampleScreen: View {
     
     // Initialize the ViewModel, binding and lifecycle
-    @StateObject var viewModel = SharedExampleViewModel(ExampleViewModel())
+    @StateObject var viewModel = MyMainScreenViewModel(ExampleViewModel())
     
     var body: some View {
         VStack {
