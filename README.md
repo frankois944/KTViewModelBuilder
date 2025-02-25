@@ -61,7 +61,7 @@ The macro generate a SwiftUI ViewModel from the content of the Kotlin `ExampleVi
 <summary>Generated content</summary>
 
 ```swift
-class SharedExampleViewModel : ObservableObject {
+class ExampleViewModel : ObservableObject {
     private let viewModelStore = ViewModelStore()
 
     @Published private(set) var stringData: String
