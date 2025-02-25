@@ -12,7 +12,7 @@ For example, instead of using KotlinInt/KotlinInt?, we're using Int/Int?, it can
 
 ### Kotlin ViewModel
 
-A Kotlin ViewModel shared between Android and iOS with Observable content and methods.
+The macro can create unidirectional and bidirectional binding.
 
 ```kotlin
 public class ExampleViewModel : ViewModel() {
