@@ -14,8 +14,6 @@ See the [sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sam
 
 ### Kotlin ViewModel
 
-The macro can create unidirectional and bidirectional binding.
-
 ```kotlin
 public class ExampleViewModel : ViewModel() {
 
