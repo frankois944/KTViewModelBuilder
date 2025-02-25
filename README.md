@@ -8,6 +8,8 @@ For example, instead of using KotlinInt/KotlinInt?, we're using Int/Int?, it can
 > [!NOTE]  
 > The macro can create uniderectional and bidirectionel binding
 
+See the [sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) for a full example.
+
 ## Example
 
 ### Kotlin ViewModel
