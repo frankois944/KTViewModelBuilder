@@ -26,7 +26,7 @@ jobs:
     - name: Run tests
       run: swift test --enable-code-coverage
     - name: Prepare Code Coverage
-      run: xcrun llvm-cov export -format="lcov" .build/debug/AutomergeSwiftAdditionsPackageTests.xctest/Contents/MacOS/AutomergeSwiftAdditionsPackageTests  -instr-profile .build/debug/codecov/default.profdata > info.lcov
+      run: xcrun llvm-cov export -format="lcov" .build/debug/KTViewModelBuilderPackageTests.xctest/Contents/MacOS/KTViewModelBuilderPackageTests -instr-profile .build/debug/codecov/default.profdata > info.lcov
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       with:
