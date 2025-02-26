@@ -24,9 +24,14 @@ jobs:
           .build/
         key: ${{ runner.os }}-build
     - name: Run tests
-      run: | 
-        swift test --enable-code-coverage
-        bash <(curl -s https://codecov.io/bash) -t ${{ secrets.SONAR_TOKEN }}
+      run: swift test --enable-code-coverage
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        files: .build/debug/codecov/KTViewModelBuilder.json
+        disable_search: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: frankois944/KTViewModelBuilder
         
 
       
