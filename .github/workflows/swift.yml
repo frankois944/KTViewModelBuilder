@@ -25,10 +25,14 @@ jobs:
         key: ${{ runner.os }}-build
     - name: Run tests
       run: swift test --enable-code-coverage
+    - name: Test coverage
+      uses: maxep/spm-lcov-action@0.3.0
+      with:
+          output-file: ./coverage/lcov.info
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       with:
-        files: .build/debug/codecov/KTViewModelBuilder.json
+        files: ./coverage/lcov.info
         disable_search: true
         token: ${{ secrets.CODECOV_TOKEN }}
         slug: frankois944/KTViewModelBuilder
