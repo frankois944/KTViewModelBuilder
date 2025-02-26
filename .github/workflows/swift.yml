@@ -16,12 +16,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v --enable-code-coverage
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
+    - name: Cache build
+      id: cache-build
+      uses: actions/cache@v4
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        slug: frankois944/KTViewModelBuilder
+        path: |
+          .build/
+        key: ${{ runner.os }}-build
+    - name: Run tests
+      run: | 
+        swift test --enable-code-coverage
+        bash <(curl -s https://codecov.io/bash) -t ${{ secrets.SONAR_TOKEN }}
+        
+
+      
