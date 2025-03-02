@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/github/frankois944/KTViewModelBuilder/branch/main/graph/badge.svg?token=X25DPW3QJL)](https://codecov.io/github/frankois944/KTViewModelBuilder)
 
-A macro to use inside a Kotlin multiplatform project for wrapping a Kotlin ViewModel into a SwiftUI ObservableObject, based on the [SKIE library](https://skie.touchlab.co/).
+A SwiftUI macro to use inside a Apple Kotlin multiplatform project for wrapping a Kotlin ViewModel into a SwiftUI ObservableObject, based on the [SKIE library](https://skie.touchlab.co/).
 
 The goal of this macro is to increase the iOS development experience by removing the complexity of using a Kotlin ViewModel inside an iOS application written in Swift and also respecting the Lifecycle.
 
