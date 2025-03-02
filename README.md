@@ -10,7 +10,7 @@ For example, instead of using KotlinInt/KotlinInt?, we're using Int/Int?, it can
 
 Currently supported Kotlin types : dataclass/class, int, double, float, bool, uint, Long (swift int64), please make an issue for more.
 
-You can also bind **List** but only with type Class, DataClass and String.
+You can also bind **List** but only with type `Class` and `String`.
 
 > [!NOTE]  
 > The macro can create uniderectional and bidirectionel binding
