@@ -15,7 +15,7 @@ You can also bind **List** but only with type `Class` and `String`.
 > [!NOTE]  
 > The macro can create uniderectional and bidirectionel binding
 
-See the [sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) for a full example.
+See the [sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) for a full and detailed example.
 
 ## Example
 
