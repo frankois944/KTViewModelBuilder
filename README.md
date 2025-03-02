@@ -63,7 +63,6 @@ The macro generate a SwiftUI ViewModel from the content of the Kotlin `ExampleVi
                     .init(\.bidirectionalString, String.self, true),
                     .init(\.bidirectionalInt, Int?.self, true),
                     .init(\.bidirectionalBoolean, Bool.self, true),
-                    .init(\.bidirectionalLong, Int64.self, true),
                     .init(\.bidirectionalLong, Int64.self, true)
 )
 class MyMainScreenViewModel: ObservableObject {}
