@@ -65,15 +65,10 @@ public struct SharedViewModelBindingMacro: MemberMacro {
                         .as(KeyPathExprSyntax.self)?.components.first?.component
                         .as(KeyPathPropertyComponentSyntax.self)?.declName.baseName.text
                 case 1: // type
-                    type = value.expression
-                        .as(MemberAccessExprSyntax.self)?.base?
-                        .as(DeclReferenceExprSyntax.self)?.baseName.text
-                    if type == nil {
+                    type = value.expression.description.replacingOccurrences(of: ".self", with: "")
+                    if type?.hasSuffix("?") == true {
                         isOptional = true
-                        type = value.expression
-                            .as(MemberAccessExprSyntax.self)?.base?
-                            .as(OptionalChainingExprSyntax.self)?.expression
-                            .as(DeclReferenceExprSyntax.self)?.baseName.text
+                        type = type?.replacingOccurrences(of: "?", with: "")
                     }
                 case 2: // bidirectional
                     bidirectional = value.expression

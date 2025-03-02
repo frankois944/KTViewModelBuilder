@@ -19,9 +19,19 @@ public class ExampleViewModel : ViewModel() {
     public var bidirectionalBoolean: MutableStateFlow<Boolean> = MutableStateFlow<Boolean>(false)
     public var bidirectionalInt: MutableStateFlow<Int?> = MutableStateFlow<Int?>(42)
     public var bidirectionalLong: MutableStateFlow<Long> = MutableStateFlow<Long>(424242L)
-
+    public var bidirectionalArrayString: MutableStateFlow<List<String>> = MutableStateFlow<List<String>>(emptyList())
+    
     private val _stringData = MutableStateFlow("Some Data")
     public val stringData: StateFlow<String> = _stringData
+
+    private val _listStringData = MutableStateFlow<List<String>>(emptyList())
+    public val listStringData: StateFlow<List<String>> = _listStringData
+    
+    private val _listNullStringData = MutableStateFlow<List<String>?>(emptyList())
+    public val listNullStringData: StateFlow<List<String>?> = _listNullStringData
+
+    private val _listIntData = MutableStateFlow<List<Int>>(emptyList())
+    public val listIntData: StateFlow<List<Int>> = _listIntData
 
     private val _intNullableData = MutableStateFlow<Int?>(null)
     public val intNullableData: StateFlow<Int?> = _intNullableData

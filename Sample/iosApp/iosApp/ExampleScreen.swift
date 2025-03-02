@@ -16,10 +16,15 @@ import shared
                     .init(\.intNullableData, Int?.self),
                     .init(\.randomValue, Double.self),
                     .init(\.entityData, MyData?.self),
+                    .init(\.listStringData, [String].self, false),
+                    .init(\.listNullStringData, [String?]?.self, false),
+                    .init(\.listIntData, [KotlinInt].self, false),
                     .init(\.bidirectionalString, String.self, true),
                     .init(\.bidirectionalInt, Int?.self, true),
                     .init(\.bidirectionalBoolean, Bool.self, true),
-                    .init(\.bidirectionalLong, Int64.self, true)
+                    .init(\.bidirectionalLong, Int64.self, true),
+                    .init(\.bidirectionalArrayString , [String].self, true)
+
 )
 class MyMainScreenViewModel: ObservableObject {}
 
@@ -62,6 +67,8 @@ struct ExampleScreen: View {
             }
         }
         .task {
+            let test: Int = 4242
+            let test1: Int = KotlinInt(integerLiteral: 42).intValue
             // start viewmodel lifecycle
             await viewModel.start()
         }
