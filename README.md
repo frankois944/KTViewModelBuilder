@@ -24,7 +24,7 @@ https://github.com/frankois944/KTViewModelBuilder/blob/983bedf1cec93dc96ffe3d688
 </details>
 
 <details>
-<summary>iOS SwiftUI</summary>
+<summary>iOS SwiftUI macro</summary>
 https://github.com/frankois944/KTViewModelBuilder/blob/983bedf1cec93dc96ffe3d688bdcd1c649540a8e/Sample/iosApp/iosApp/ExampleScreen.swift#L13-L29
 </details>
 
