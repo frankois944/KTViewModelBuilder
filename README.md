@@ -17,6 +17,17 @@ You can also bind **List** but only with type `Class` and `String`.
 
 See the [sample](https://github.com/frankois944/KTViewModelBuilder/tree/main/Sample) for a full and detailed example.
 
+
+<details>
+<summary>Kotlin</summary>
+https://github.com/frankois944/KTViewModelBuilder/blob/983bedf1cec93dc96ffe3d688bdcd1c649540a8e/Sample/shared/src/commonMain/kotlin/com/example/ktviewmodelbuilder/ExampleViewModel.kt#L18-L43
+</details>
+
+<details>
+<summary>iOS</summary>
+https://github.com/frankois944/KTViewModelBuilder/blob/983bedf1cec93dc96ffe3d688bdcd1c649540a8e/Sample/iosApp/iosApp/ExampleScreen.swift#L13-L29
+</details>
+
 ## Example
 
 ### Kotlin ViewModel
