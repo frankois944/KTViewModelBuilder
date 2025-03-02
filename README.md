@@ -10,6 +10,8 @@ For example, instead of using KotlinInt/KotlinInt?, we're using Int/Int?, it can
 
 Currently supported Kotlin types : dataclass/class, int, double, float, bool, uint, Long (swift int64), please make an issue for more.
 
+You can also bind **List** but only with type Class, DataClass and String.
+
 > [!NOTE]  
 > The macro can create uniderectional and bidirectionel binding
 
@@ -61,6 +63,7 @@ The macro generate a SwiftUI ViewModel from the content of the Kotlin `ExampleVi
                     .init(\.bidirectionalString, String.self, true),
                     .init(\.bidirectionalInt, Int?.self, true),
                     .init(\.bidirectionalBoolean, Bool.self, true),
+                    .init(\.bidirectionalLong, Int64.self, true),
                     .init(\.bidirectionalLong, Int64.self, true)
 )
 class MyMainScreenViewModel: ObservableObject {}
