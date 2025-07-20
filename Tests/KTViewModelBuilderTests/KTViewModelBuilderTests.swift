@@ -120,7 +120,7 @@ final class KTViewModelBuilderTests: XCTestCase {
                     self.viewModelStore.get(key: "MainScreenViewModelKey") as! MainScreenViewModel
                 }
 
-                func start() async {
+                @MainActor func start() async {
                     await withTaskGroup(of: (Void).self) {
                         $0.addTask { @MainActor [weak self] in
                             for await value in self!.instance.stringData where self != nil {

@@ -141,39 +141,43 @@ public struct SharedViewModelBindingMacro: MemberMacro {
             var instance: \(className) { self.viewModelStore.get(key: \"\(className)Key\") as! \(className) }
             """)
         
-        let startViewModel = try FunctionDeclSyntax("func start() async") {
-            FunctionCallExprSyntax(
-                callee: ExprSyntax(stringLiteral: "await withTaskGroup"),
-                trailingClosure: ClosureExprSyntax(
-                    statements: CodeBlockItemListSyntax(itemsBuilder: {
-                        for item in bindingList {
-                            let type = item.binding.type.lowercased()
-                            let optional = item.isOptional ? "?" : ""
-                            let updatedValue = kotlinType.contains(type) ?
-                            "value\(optional).\(type)Value"
-                            :
-                            "value"
-                            ExprSyntax(stringLiteral: """
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.\(item.binding.name) where self != nil {
-                                if \(updatedValue) != self?.\(item.binding.name) {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW \(item.binding.name) : " + String(describing: value))
-                                    #endif
-                                    self?.\(item.binding.name) = \(updatedValue)
-                                }
-                            }
-                        }
-                    """)
-                        }
-                    }))) {
-                        LabeledExprSyntax(label: "of", expression: ExprSyntax(stringLiteral: "(Void).self"))
+        let jobs = DeclSyntax(stringLiteral: """
+            private var jobs = [Task<(), Never>]()
+        """)
+        
+        let startViewModel = try FunctionDeclSyntax("@MainActor func start() async") {
+            for item in bindingList {
+                let type = item.binding.type.lowercased()
+                let optional = item.isOptional ? "?" : ""
+                let updatedValue = kotlinType.contains(type) ?
+                "value\(optional).\(type)Value"
+                :
+                "value"
+                ExprSyntax(stringLiteral: """
+            jobs.append(Task { [weak self] in
+                for await value in self!.instance.\(item.binding.name) where self != nil {
+                    if \(updatedValue) != self?.\(item.binding.name) {
+                        #if DEBUG
+                        print("UPDATING TO VIEW \(item.binding.name) : " + String(describing: value))
+                        #endif
+                        self?.\(item.binding.name) = \(updatedValue)
                     }
+                }
+            })
+            """)
+            }
         }
         
         let deinitFunc = DeinitializerDeclSyntax() {
             ExprSyntax(stringLiteral: """
+            self.jobs.forEach {
+                $0.cancel()
+            }
+            self.jobs.removeAll()
             self.viewModelStore.clear()
+            #if DEBUG
+            print("DEINIT \\(self)")
+            #endif
             """)
         }
         
@@ -184,6 +188,7 @@ public struct SharedViewModelBindingMacro: MemberMacro {
         result.append(contentsOf: [
             DeclSyntax(initFunc),
             DeclSyntax(instanceAttr),
+            DeclSyntax(jobs),
             DeclSyntax(startViewModel),
             DeclSyntax(deinitFunc)
         ])

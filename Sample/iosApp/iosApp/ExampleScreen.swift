@@ -8,7 +8,7 @@
 
 import SwiftUI
 import KTViewModelBuilder
-import shared
+@preconcurrency import shared
 
 @ktViewModelBinding(ofType: ExampleViewModel.self,
                     publishing:
@@ -30,8 +30,14 @@ class MyMainScreenViewModel: ObservableObject {}
 
 struct SheetView: View {
     @Environment(\.dismiss) var dismiss
+    @StateObject var viewModel = MyMainScreenViewModel(.init())
     
     var body: some View {
+        VStack {
+            Text("STRING VALUE \(viewModel.stringData)")
+            Text("NULL VALUE \(String(describing: viewModel.intNullableData))")
+            Text("RANDOM VALUE \(viewModel.randomValue)")
+        }
         Button("Press to dismiss") {
             dismiss()
         }
@@ -66,9 +72,7 @@ struct ExampleScreen: View {
                 SheetView()
             }
         }
-        .task {
-            let test: Int = 4242
-            let test1: Int = KotlinInt(integerLiteral: 42).intValue
+        .task { [viewModel] in
             // start viewmodel lifecycle
             await viewModel.start()
         }
