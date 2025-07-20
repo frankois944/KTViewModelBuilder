@@ -120,123 +120,128 @@ final class KTViewModelBuilderTests: XCTestCase {
                     self.viewModelStore.get(key: "MainScreenViewModelKey") as! MainScreenViewModel
                 }
 
+                private var jobs = [Task<(), Never>]()
+
                 @MainActor func start() async {
-                    await withTaskGroup(of: (Void).self) {
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.stringData where self != nil {
-                                if value != self?.stringData {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW stringData : " + String(describing: value))
-                                    #endif
-                                    self?.stringData = value
-                                }
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.stringData where self != nil {
+                            if value != self?.stringData {
+                                #if DEBUG
+                                print("UPDATING TO VIEW stringData : " + String(describing: value))
+                                #endif
+                                self?.stringData = value
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.intNullableData where self != nil {
-                                if value?.intValue != self?.intNullableData {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW intNullableData : " + String(describing: value))
-                                    #endif
-                                    self?.intNullableData = value?.intValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.intNullableData where self != nil {
+                            if value?.intValue != self?.intNullableData {
+                                #if DEBUG
+                                print("UPDATING TO VIEW intNullableData : " + String(describing: value))
+                                #endif
+                                self?.intNullableData = value?.intValue
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.randomValue where self != nil {
-                                if value.doubleValue != self?.randomValue {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW randomValue : " + String(describing: value))
-                                    #endif
-                                    self?.randomValue = value.doubleValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.randomValue where self != nil {
+                            if value.doubleValue != self?.randomValue {
+                                #if DEBUG
+                                print("UPDATING TO VIEW randomValue : " + String(describing: value))
+                                #endif
+                                self?.randomValue = value.doubleValue
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.entityData where self != nil {
-                                if value != self?.entityData {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW entityData : " + String(describing: value))
-                                    #endif
-                                    self?.entityData = value
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.entityData where self != nil {
+                            if value != self?.entityData {
+                                #if DEBUG
+                                print("UPDATING TO VIEW entityData : " + String(describing: value))
+                                #endif
+                                self?.entityData = value
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalString where self != nil {
-                                if value != self?.bidirectionalString {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalString : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalString = value
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalString where self != nil {
+                            if value != self?.bidirectionalString {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalString : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalString = value
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalInt where self != nil {
-                                if value?.intValue != self?.bidirectionalInt {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalInt : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalInt = value?.intValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalInt where self != nil {
+                            if value?.intValue != self?.bidirectionalInt {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalInt : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalInt = value?.intValue
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalBoolean where self != nil {
-                                if value.boolValue != self?.bidirectionalBoolean {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalBoolean : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalBoolean = value.boolValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalBoolean where self != nil {
+                            if value.boolValue != self?.bidirectionalBoolean {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalBoolean : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalBoolean = value.boolValue
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalLong where self != nil {
-                                if value.int64Value != self?.bidirectionalLong {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalLong : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalLong = value.int64Value
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalLong where self != nil {
+                            if value.int64Value != self?.bidirectionalLong {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalLong : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalLong = value.int64Value
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalDouble where self != nil {
-                                if value.doubleValue != self?.bidirectionalDouble {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalDouble : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalDouble = value.doubleValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalDouble where self != nil {
+                            if value.doubleValue != self?.bidirectionalDouble {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalDouble : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalDouble = value.doubleValue
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalFloat where self != nil {
-                                if value.floatValue != self?.bidirectionalFloat {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalFloat : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalFloat = value.floatValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalFloat where self != nil {
+                            if value.floatValue != self?.bidirectionalFloat {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalFloat : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalFloat = value.floatValue
                             }
                         }
-                        $0.addTask { @MainActor [weak self] in
-                            for await value in self!.instance.bidirectionalUnit where self != nil {
-                                if value.uintValue != self?.bidirectionalUnit {
-                                    #if DEBUG
-                                    print("UPDATING TO VIEW bidirectionalUnit : " + String(describing: value))
-                                    #endif
-                                    self?.bidirectionalUnit = value.uintValue
-                                }
+                        })
+                    jobs.append(Task { [weak self] in
+                        for await value in self!.instance.bidirectionalUnit where self != nil {
+                            if value.uintValue != self?.bidirectionalUnit {
+                                #if DEBUG
+                                print("UPDATING TO VIEW bidirectionalUnit : " + String(describing: value))
+                                #endif
+                                self?.bidirectionalUnit = value.uintValue
                             }
                         }
-                    }
+                        })
                 }
 
                 deinit {
+                    self.jobs.forEach {
+                        $0.cancel()
+                    }
+                    self.jobs.removeAll()
                     self.viewModelStore.clear()
+                    print("DEINIT \(self)")
                 }
             }
             """,

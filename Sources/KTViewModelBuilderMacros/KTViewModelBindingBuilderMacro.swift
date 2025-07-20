@@ -173,12 +173,18 @@ public struct SharedViewModelBindingMacro: MemberMacro {
             self.jobs.forEach {
                 $0.cancel()
             }
-            self.jobs.removeAll()
-            self.viewModelStore.clear()
-            #if DEBUG
-            print("DEINIT \\(self)")
-            #endif
             """)
+            ExprSyntax(stringLiteral: """
+            self.jobs.removeAll()
+            """)
+            ExprSyntax(stringLiteral: """
+            self.viewModelStore.clear()
+            """)
+#if DEBUG
+            ExprSyntax(stringLiteral: """
+            print("DEINIT -[KTViewModelBuilderTests testMacro]")
+            """)
+#endif
         }
         
         var result = [
